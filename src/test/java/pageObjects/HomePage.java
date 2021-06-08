@@ -1,4 +1,4 @@
-package pageObjects;
+package pageobjects;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -37,30 +37,31 @@ public class HomePage extends Reusables {
 
 	public void startApplication(String browser) {
 
-		StartApplication(browser);
+		startApplication(browser);
 	}
 
-	public void enterUrl(String url) throws InterruptedException {
+	public void enterUrl(String url) throws Exception {
 
-		EnterURL(url);
-		WaitForPageLoad(driver);
+		launchURL(url);
+		waitForPageLoad(driver);
 	}
 	
-	public void clickonNews(String news) throws InterruptedException {
-		Click(newsRegardingRoger);
-		WaitForPageLoad(driver);
+	public void clickOnNews(String news) throws InterruptedException {
+		click(newsRegardingRoger);
+		waitForPageLoad(driver);
 	}
 	
 	public void validateSiteNavigationAndNews() throws InterruptedException {
-		VerifyCurrentURL("french-open-2021");
-		Heading=GetText(validateHeading);
-		CompareExactText(Heading,"Roger Federer");
+		verifyCurrentURL("french-open-2021");
+		heading=getText(validateHeading);
+		compareExactText(heading,"Roger Federer");
+		iExplicitWaitForVisibleElement(rogerNewsOutOfList,10); 
 		Thread.sleep(500);
-		Click(rogerNewsOutOfList);
-		WaitForPageLoad(driver);
-		VerifyCurrentURL("listen-to-my-body-roger-federer-pulls-out-of-french-open-to-protect-knee");
-		String newsPara=GetText(newsParagraph);
-		CompareExactText(newsPara,"Roger Federer has withdrawn from the French Open one day after he surprised himself by reaching the fourth round "
+		click(rogerNewsOutOfList);
+		waitForPageLoad(driver);
+		verifyCurrentURL("listen-to-my-body-roger-federer-pulls-out-of-french-open-to-protect-knee");
+		String newsPara=getText(newsParagraph);
+		compareExactText(newsPara,"Roger Federer has withdrawn from the French Open one day after he surprised himself by reaching the fourth round "
 				+ "with a late-night win over Dominik Koepfer of Germany. He was due to face the ninth seed, Matteo Berrettini, "
 				+ "who received a walkover into his first Roland Garros quarter-final.");	
 			

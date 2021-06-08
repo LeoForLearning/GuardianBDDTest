@@ -4,7 +4,7 @@ Feature: Validate Patient Top application and comparing score
   
   Scenario Outline: Validate score for a patient
     Given I launch browser "chrome"
-    And   I navigate to "https://www.theguardian.com/tone/news" application
+    And   I navigate to "web" application
     When  I click on news related to  "<News Details>"
     Then  I validate user is navigated to full details of the news 
     And   I launch new site called "https://www.google.co.in" to confirm the news

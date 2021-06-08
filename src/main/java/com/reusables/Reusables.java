@@ -3,6 +3,7 @@ package com.reusables;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -25,9 +26,11 @@ public class Reusables {
 	public static RemoteWebDriver driver;
 	
 	private static JavascriptExecutor jse = null;
-	
-	public String Heading=null;
-	protected String getTextOfNews=null;
+    public Logger log = Logger.getLogger(Reusables.class);
+	public String env = System.getProperty("ENV");
+
+	public String heading=null;
+	protected String gettextofnews=null;
 
 	public void EnterURL(String applicationUrl) {
 		try {
@@ -39,7 +42,7 @@ public class Reusables {
 		}
 	}
 
-	public void StartApplication(String browser) {
+	public void startApplication(String browser) {
 		try {
 
 			if (browser.equalsIgnoreCase("chrome")) {
@@ -64,8 +67,11 @@ public class Reusables {
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			driver.manage().window().maximize();
 			jse = (JavascriptExecutor) driver;
+			
+			log.info(driver + " is current browser selected");
 
 		} catch (Exception e) {
+			log.debug("Browser issue" + e);
 			System.out.println(e.getStackTrace());
 		}
 	}
@@ -74,7 +80,9 @@ public class Reusables {
 		try {
 			ele.clear();
 			ele.sendKeys(data);
+			log.info( "Typed on the element" + ele );
 		} catch (WebDriverException e) {
+			log.debug("Unable to type on the element" + e);
 			System.out.println(e.getStackTrace());
 		}
 	}
@@ -83,48 +91,52 @@ public class Reusables {
 		String bReturn = "";
 		try {
 			bReturn = driver.getTitle();
+			log.info( "Title of the web page is retrieved  of the page:" + bReturn );
 		} catch (WebDriverException e) {
+			log.debug("Unable to retrieve the title" + e);
 			System.out.println(e.getStackTrace());
 		}
 		return bReturn;
 	}
 
-	public void SelectDropDownUsingText(WebElement ele, String value) {
+	public void selectDropDownUsingText(WebElement ele, String value) {
 		try {
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-			System.out.println("enter blocl value" + value);
-			System.out.println("ele value" + ele);
-
 			new Select(ele).selectByVisibleText(value);
-			System.out.println("selected value");
+			log.info( "Selected the element" + ele + " by text" );
 
 		} catch (WebDriverException e) {
+			log.debug("Unable to select the element" + e);
 			System.out.println(e.getStackTrace());
 
 		}
 
 	}
 
-	public void Click(WebElement ele) {
+	public void click(WebElement ele) {
 		try {
 			ele.click();
+			log.info( "Clicked the element" + ele );
 		} catch (WebDriverException e) {
+			log.debug("Unable to click the element" + e);
 			System.out.println(e.getStackTrace());
 		}
 	}
 
-	public void SelectDropDownUsingIndex(WebElement ele, int index) {
+	public void selectDropDownUsingIndex(WebElement ele, int index) {
 		try {
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			new Select(ele).selectByIndex(index);
+			log.info( "Selected the element" + ele + " by index"  );
 		} catch (WebDriverException e) {
+			log.debug("Unable to select the element" + e);
 			System.out.println(e.getStackTrace());
 
 		}
 
 	}
 
-	public void ImplicitlyWait(int seconds) {
+	public void implicitlyWait(int seconds) {
 		driver.manage().timeouts().implicitlyWait(seconds, TimeUnit.SECONDS);
 	}
 
@@ -132,36 +144,51 @@ public class Reusables {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, sec);
 			wait.until(ExpectedConditions.elementToBeClickable(ele));
+			log.info( "Waiting for the element" + ele);
 		} catch (WebDriverException e) {
+			log.debug("Some excepetion happened" + e);
 			System.out.println(e.getStackTrace());
 		}
 	}
+	
+	  public void iExplicitWaitForVisibleElement(WebElement ele, long sec) {
+	        try {
+	            WebDriverWait wait = new WebDriverWait(driver, sec);
+	            wait.until(ExpectedConditions.visibilityOf(ele));
+				log.info( "Waiting for the element" + ele);
+	        } catch (WebDriverException e) {
+				log.debug("Some excepetion happened" + e);
+				System.out.println(e.getStackTrace());
+	        }
+	    }
 
-	public String GetCurrentURL() {
+	public String getCurrentURL() {
 		String currentURL = "";
 		try {
 			currentURL = driver.getCurrentUrl();
 		} catch (WebDriverException e) {
-			System.out.println(e.getStackTrace());
+			e.printStackTrace();
 		}
 		return currentURL;
 	}
 	
-	  public boolean VerifyCurrentURL(String expectedTitle) {
+	  public boolean verifyCurrentURL(String expectedTitle) {
 	        boolean bReturn = false;
 	        try {
-	            if (GetCurrentURL().contains(expectedTitle)) {
+	            if (getCurrentURL().contains(expectedTitle)) {
 	                bReturn = true;
+	                log.info("verified current url of the element: " + expectedTitle);
+
 	            } else {
-	                System.out.println("i failed to verify current url of the element: " + expectedTitle);
+	                log.info("i failed to verify current url of the element: " + expectedTitle);
 	            }
 	        } catch (WebDriverException e) {
-				System.out.println(e.getStackTrace());
+				e.printStackTrace();
 	        }
 	        return bReturn;
 	    }
 	  
-	  public static void WaitForPageLoad(WebDriver driver) throws InterruptedException {
+	  public static void waitForPageLoad(WebDriver driver) throws InterruptedException {
 	        Thread.sleep(1000);
 	        ExpectedCondition<Boolean> pageLoadCondition = new ExpectedCondition<Boolean>() {
 	            public Boolean apply(WebDriver driver) {
@@ -180,28 +207,28 @@ public class Reusables {
 	            wait.until(ExpectedConditions.visibilityOf(ele));
 	            if (ele.isDisplayed()) {
 	                bReturn = true;
-	                System.out.println("Element " + elementName + " displayed successfully");
+	                log.info("Element " + elementName + " displayed successfully");
 	            }
 	        } catch (WebDriverException e) {
 	            bReturn = false;
-				System.out.println(e.getStackTrace());
+	            e.printStackTrace();
 	        }
 	        return bReturn;
 	    }
 	  
-	    public void CompareExactText(String actualText, String expectedText) {
+	    public void compareExactText(String actualText, String expectedText) {
 	        try {
 	            if (actualText.equals(expectedText)) {
-	                System.out.println("The expected text matches the actual text: " + expectedText);
+	            	log.info("The expected text matches the actual text: " + expectedText);
 	            } else {
-	            	 System.out.println("The expected text does not match the actual text: " + expectedText);
+	            	log.info("The expected text does not match the actual text: " + expectedText);
 	            }
 	        } catch (WebDriverException e) {
-				System.out.println(e.getStackTrace());
+				log.error("The"+actualText +"and"+ expectedText +"does not match");
 	        }
 	    }	
 	  
-	   public String GetText(WebElement ele) {
+	   public String getText(WebElement ele) {
 	        String bReturn = "";
 	        try {
 	            bReturn = ele.getText();
@@ -229,13 +256,42 @@ public class Reusables {
 	            case ("css"):
 	                return driver.findElementsByCssSelector(locatorValue);
 	            default:
-	                System.out.println("please enter valid locator");
+	            	log.info("please enter valid locator");
 	                return null;
 	            }
 	        } catch (WebDriverException e) {
+	        		log.error("Error on Finding the element", e);
 	        		e.printStackTrace();	        
 	        }
 	        return null;
 
 	    }
+	   
+	   public void iLogErrorMessage(String logErrMessage) {
+	        try {
+	            System.err.println(logErrMessage);
+	            log.info("I logged a Error Message" + logErrMessage);
+	        } catch (Exception e) {
+	        	log.info("iLogErrorMessage- " + logErrMessage, e);
+	        }
+	    }
+	   
+	   
+	   public void launchURL(String url) throws Exception {
+			String webUrl = "";
+			try {
+				if(System.getProperty("ENV").contains("prod")) {
+					webUrl = "https://www.theguardian.com/tone/news";
+				}else {
+					webUrl = "https://www."+env+"theguardian.com/tone/news";
+				}
+				
+				if (url.toLowerCase().contains("web")) {
+					EnterURL(webUrl);
+				} 
+			} catch (NullPointerException e) {
+				log.error("Error on Navihgating to the URL", e);
+
+			}
+		}
 }

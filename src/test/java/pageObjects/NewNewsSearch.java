@@ -1,4 +1,4 @@
-package pageObjects;
+package pageobjects;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class NewNewsSearch extends Reusables {
 	public void enterGoogleUrl(String url) throws InterruptedException {
 
 		EnterURL(url);
-		WaitForPageLoad(driver);
+		waitForPageLoad(driver);
 	}
 
 	public void searchNews() throws Exception {
@@ -47,32 +47,32 @@ public class NewNewsSearch extends Reusables {
 	}
 	
 	public void clickViewAllNews()  {
-		ImplicitlyWait(5);
-		Click(viewAllButton);
+		implicitlyWait(5);
+		click(viewAllButton);
 	}
 	
 	public void getTextListOfNews()  {
 		int num=0;
-		ImplicitlyWait(5);
+		implicitlyWait(5);
 		List<WebElement> listNews = iGetListOfElement("xpath", "//div[@class='yr3B8d KWQBje']/../..");		
 		for (int i = 0; i < num; i++) {
-			GetText(listNews.get(num));			
+			getText(listNews.get(num));			
 		}
 	}
 	
 	
 	
-	public void ClickFirstListOfNews(int num)  {
-		ImplicitlyWait(5);
+	public void clickFirstListOfNews(int num)  {
+		implicitlyWait(5);
 		List<WebElement> listNews = iGetListOfElement("xpath", "//div[@class='yr3B8d KWQBje']/../..");		
 		for (int i = 0; i < num; i++) {
-			Click(listNews.get(num));			
+			click(listNews.get(num));			
 		}
 	}
 
 	public void validateNews() {
-		getTextOfNews=GetText(validateNews);
-		CompareExactText(getTextOfNews, Heading);
+		gettextofnews=getText(validateNews);
+		compareExactText(gettextofnews, heading);
 	}
 	
 	
